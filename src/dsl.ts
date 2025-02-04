@@ -1,30 +1,16 @@
 export const dsl = `
-$primary=#2196f3
-$dark=#1a237e
-$light=#eee
-
-c dir=col w=100vw h=100vh bg=$dark {
-  c dir=col align=c pad=32 bg=$dark flex=1 {
-    h1 t="Welcome to Complex DSL!" s=36 tc=$light anim=fadeIn 0.5s
-    p t="This is a paragraph introducing the container's content." s=16 tc=$light
-    ul gap=8 {
-      li t="First feature: Simple syntax" s=14 tc=$light
-      li t="Second feature: Nestable elements" s=14 tc=$light
-      li t="Third feature: Custom attributes" s=14 tc=$light
-    }
-    p t="Below is a link to a useful resource." s=16 tc=$light
-    a h="https://example.com" t="Click Here" bg=$primary tc=white pad=12 br=4 @hover bg=#9c27b0
-    @mobile maxw=600 {
-      p s=14
-      ul gap=4 {
-        li s=12
-      }
-    }
-  }
-  footer t="Footer: Thanks for visiting!" s=12 tc=$light pad=16
-}
-
-@keyframes fadeIn
-  from op=0
-  to op=1
+c .boxes-section pad=40 align=c
+  h2 t="Featured Boxes" s=32 tc=#333
+  g cols=3 gap=24 pad=24
+    c .box pad=24 bg=#f5f5f5 br=8 align=c
+      h3 t="Box 1" s=24 tc=#1a237e
+      p t="First box content" s=16 tc=#666
+    c .box pad=24 bg=#f5f5f5 br=8 align=c
+      h3 t="Box 2" s=24 tc=#1a237e
+      p t="Second box content" s=16 tc=#666
+    c .box pad=24 bg=#f5f5f5 br=8 align=c
+      h3 t="Box 3" s=24 tc=#1a237e
+      p t="Third box content" s=16 tc=#666
+  @mobile maxw=600
+    g cols=1 gap=16
 `

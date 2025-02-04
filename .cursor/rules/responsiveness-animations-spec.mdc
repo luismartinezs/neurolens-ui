@@ -1,0 +1,166 @@
+---
+description: NeuroLens DSL: Responsiveness & Animations Spec
+globs: 
+---
+---
+
+### **NeuroLens DSL: Responsiveness & Animations Spec**  
+*Optimized for LLM generation and browser rendering.*
+
+---
+
+## **1. Responsiveness**  
+### **Syntax Rules**  
+- **Breakpoints**: Defined with `@` followed by a predefined keyword (`mobile`, `tablet`) or custom query (`maxw=...`).  
+- **Nesting**: Breakpoint blocks are indented under parent elements. Styles inside apply only within the breakpoint.  
+- **Attribute Overrides**: Modify any style/layout attribute (e.g., `dir=col`, `cols=1`).  
+
+#### **Predefined Breakpoints**  
+| Keyword   | Equivalent Media Query        |  
+|-----------|--------------------------------|  
+| `@mobile` | `(max-width: 600px)`           |  
+| `@tablet` | `(min-width: 601px) and (max-width: 900px)` |  
+
+#### **Custom Breakpoints**  
+```python
+@maxw=800       # (max-width: 800px)  
+@minw=1024      # (min-width: 1024px)  
+```
+
+---
+
+### **Examples**  
+#### **Example 1: Stack Columns on Mobile**  
+**DSL**:  
+```python
+c dir=row gap=16 pad=24  
+  c .card w=300 bg=#fff  
+  c .card w=300 bg=#fff  
+  @mobile  
+    dir=col gap=8  
+    .card w=100%  
+```  
+**HTML/CSS Output**:  
+```html
+<div style="display: flex; flex-direction: row; gap: 16px; padding: 24px;">  
+  <div class="card" style="width: 300px; background: #fff;"></div>  
+  <div class="card" style="width: 300px; background: #fff;"></div>  
+</div>  
+<style>  
+  @media (max-width: 600px) {  
+    div { flex-direction: column; gap: 8px; }  
+    .card { width: 100% !important; }  
+  }  
+</style>  
+```
+
+#### **Example 2: Hide Element on Tablet**  
+**DSL**:  
+```python
+c #banner  
+@tablet  
+  #banner disp=none  
+```  
+**HTML/CSS Output**:  
+```html
+<div id="banner"></div>  
+<style>  
+  @media (min-width: 601px) and (max-width: 900px) {  
+    #banner { display: none !important; }  
+  }  
+</style>  
+```
+
+---
+
+## **2. Animations**  
+### **Syntax Rules**  
+- **Keyframes**: Defined globally with `@keyframes <name>`.  
+- **Animation Properties**: Applied via `anim=<name> <duration> <timing-function> <delay>`.  
+  - Shorthand: `anim=fadeIn 0.3s ease`  
+- **Steps**: Define `from`/`to` or percentage-based blocks.  
+
+---
+
+### **Examples**  
+#### **Example 1: Fade-In Header**  
+**DSL**:  
+```python
+h1 t="Welcome" anim=fadeIn 0.5s ease  
+@keyframes fadeIn  
+  from op=0  
+  to op=1  
+```  
+**HTML/CSS Output**:  
+```html
+<h1 style="animation: fadeIn 0.5s ease;">Welcome</h1>  
+<style>  
+  @keyframes fadeIn {  
+    from { opacity: 0; }  
+    to { opacity: 1; }  
+  }  
+</style>  
+```
+
+#### **Example 2: Hover Scale Effect**  
+**DSL**:  
+```python
+btn t="Hover Me" anim=hoverScale 0.2s  
+@keyframes hoverScale  
+  to trf=scale(1.1)  
+@hover anim=hoverScale  
+```  
+**HTML/CSS Output**:  
+```html
+<button style="animation: hoverScale 0.2s;">Hover Me</button>  
+<style>  
+  @keyframes hoverScale {  
+    to { transform: scale(1.1); }  
+  }  
+  button:hover { animation: hoverScale 0.2s; }  
+</style>  
+```
+
+#### **Example 3: Complex Progress Bar**  
+**DSL**:  
+```python
+c .progress-bar h=8 bg=#eee br=4  
+  c .progress-fill w=0% bg=#2196f3 h=8 anim=load 2s  
+@keyframes load  
+  0% w=0%  
+  100% w=100%  
+```  
+**HTML/CSS Output**:  
+```html
+<div class="progress-bar" style="height: 8px; background: #eee; border-radius: 4px;">  
+  <div class="progress-fill" style="width: 0%; background: #2196f3; height: 8px; animation: load 2s;"></div>  
+</div>  
+<style>  
+  @keyframes load {  
+    0% { width: 0%; }  
+    100% { width: 100%; }  
+  }  
+</style>  
+```
+
+---
+
+## **Key Design Decisions**  
+1. **Responsiveness**:  
+   - Breakpoints are **element-scoped**, avoiding global CSS conflicts.  
+   - `!important` is auto-added to ensure overrides.  
+
+2. **Animations**:  
+   - **Inline Keyframes**: Defined once, reused across elements.  
+   - **Implicit Triggers**: `@hover` automatically maps to `:hover` pseudoclasses.  
+
+3. **Token Efficiency**:  
+   - `trf=scale(1.1)` instead of `transform: scale(1.1)`.  
+   - `disp=none` instead of `display: none`.  
+
+---
+
+## **Why This Works for LLMs**  
+- **Predictable Patterns**: Breakpoints and animations follow strict, minimal syntax.  
+- **Context-Free**: No need to manage external CSS files or class dependencies.  
+- **Atomic Primitives**: Each style attribute maps to a single tokenized rule.  
