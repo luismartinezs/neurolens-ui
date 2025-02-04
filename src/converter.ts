@@ -81,29 +81,100 @@ export function parseDSL(dslString: string): string {
         continue;
       } else {
         // Process key=value tokens
-        const attrMatch = token.match(/^(\w+)=(.+)$/);
+        const attrMatch = token.match(/^([a-zA-Z0-9]+)=(.+)$/);
         if (!attrMatch) continue;
         let key = attrMatch[1];
         const rawValue = attrMatch[2];
         if (!rawValue) continue;
-
-        // Handle quoted values
         const value = rawValue.startsWith('"') && rawValue.endsWith('"') ? rawValue.slice(1, -1) : rawValue;
 
         // If token key is 'c', treat it as a class name instead of an attribute
-        if (key === 'c') { element.classList.add(value); continue; }
+        if (key === 'c') {
+          element.classList.add(value);
+          continue;
+        }
 
         // Special case: for link elements, map 'h' to 'href'
         if (elementType === 'a' && key === 'h') {
           key = 'href';
         }
 
+        // Handle text content
         if (key === 't') {
           element.textContent = value;
+          continue;
+        }
+
+        // Prepare to accumulate inline styles
+        // Define style keys that should be converted to CSS
+        const styleKeys = ['s', 'tc', 'bg', 'pad', 'br', 'op', 'maxw', 'gap', 'dir', 'align', 'anim'];
+        if (!element.hasOwnProperty('__inlineStyle')) {
+          // We'll use a temporary property to accumulate styles
+          (element as any).__inlineStyle = '';
+        }
+
+        if (styleKeys.includes(key)) {
+          switch(key) {
+            case 's': // font-size
+              (element as any).__inlineStyle += `font-size: ${(/^\d+$/.test(value) ? value + 'px' : value)};`;
+              break;
+            case 'tc': // text color
+              (element as any).__inlineStyle += `color: ${value};`;
+              break;
+            case 'bg': // background
+              (element as any).__inlineStyle += `background: ${value};`;
+              break;
+            case 'pad': // padding
+              (element as any).__inlineStyle += `padding: ${(/^\d+$/.test(value) ? value + 'px' : value)};`;
+              break;
+            case 'br': // border-radius
+              (element as any).__inlineStyle += `border-radius: ${(/^\d+$/.test(value) ? value + 'px' : value)};`;
+              break;
+            case 'op': // opacity
+              (element as any).__inlineStyle += `opacity: ${value};`;
+              break;
+            case 'maxw': // max-width
+              (element as any).__inlineStyle += `max-width: ${(/^\d+$/.test(value) ? value + 'px' : value)};`;
+              break;
+            case 'gap':
+              (element as any).__inlineStyle += `gap: ${(/^\d+$/.test(value) ? value + 'px' : value)};`;
+              break;
+            case 'dir':
+              if (value === 'col') {
+                (element as any).__inlineStyle += 'display: flex; flex-direction: column;';
+              } else if (value === 'row') {
+                (element as any).__inlineStyle += 'display: flex; flex-direction: row;';
+              }
+              break;
+            case 'align':
+              if (value === 'c') {
+                (element as any).__inlineStyle += 'align-items: center; justify-content: center;';
+              } else {
+                (element as any).__inlineStyle += `align-items: ${value};`;
+              }
+              break;
+            case 'anim':
+              {
+                let animationVal = value;
+                // Look ahead for a duration token if it exists and does not have an '=' sign
+                if (i + 1 < matches.length && !/^\w+=/.test(matches[i+1])) {
+                  animationVal += ' ' + matches[i+1];
+                  i++; // skip the duration token
+                }
+                (element as any).__inlineStyle += `animation: ${animationVal};`;
+              }
+              break;
+          }
         } else {
+          // Not a style key, set as a regular attribute
           element.setAttribute(key, value);
         }
       }
+    }
+
+    // After processing all tokens for this element, if inline styles were accumulated, set them
+    if ((element as any).__inlineStyle) {
+      element.setAttribute('style', (element as any).__inlineStyle);
     }
 
     htmlElements.push({ element, indent });
