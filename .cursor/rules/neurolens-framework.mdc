@@ -1,0 +1,84 @@
+---
+description: Manifesto for the NeuroLens UI framework
+globs: 
+---
+---
+
+### **NeuroLens Framework: High-Level Overview**
+
+#### **Purpose**  
+NeuroLens is an **AI-first UI framework** designed to bridge the gap between natural language descriptions and functional user interfaces. Its core mission is to enable **seamless, dynamic UI generation** by leveraging large language models (LLMs) as the primary "developer," converting human intent into structured, machine-optimized code. Unlike traditional frameworks built for human readability, NeuroLens prioritizes **machine efficiency**, **token economy**, and **deterministic parsing** to empower AI-driven development workflows.
+
+---
+
+### **Motivation**  
+1. **AI-Centric Development**:  
+   Traditional frameworks (e.g., React, HTML/CSS) require verbose, human-readable syntax. NeuroLens rethinks UI authoring for LLMs, reducing friction in translating natural language to code.  
+
+2. **Rapid Prototyping**:  
+   Accelerate UI iteration by allowing non-technical users to describe interfaces in plain language, while LLMs handle the technical implementation.  
+
+3. **Token Efficiency**:  
+   LLMs have context window limits. NeuroLens minimizes token usage in its DSL to maximize the complexity of UIs that can be generated in a single prompt.  
+
+4. **Future-Proofing**:  
+   As AI becomes a primary tool for software development, frameworks must adapt to prioritize machine collaboration over human-centric patterns.  
+
+---
+
+### **Design Principles**  
+
+#### **1. Machine-First Syntax**  
+- **Ultra-Compact Keywords**: Elements and attributes use 1-3 character tokens (`c` for container, `t` for text).  
+- **Implicit Hierarchy**: Nesting via indentation (no closing tags) reduces redundancy.  
+- **Symbolic Shorthands**: `#` for IDs, `.` for classes, `@` for interactions (e.g., `@hover`).  
+
+#### **2. Deterministic Parsing**  
+- **Strict Validation**: Predefined rules for elements/attributes (e.g., `img` must have `src`) ensure LLM outputs are runtime-safe.  
+- **No Ambiguity**: Avoids flexible syntax (e.g., optional commas) to simplify parsing.  
+
+#### **3. Atomic Styling**  
+- **Inline Attributes**: Styles (e.g., `s=24` for font size), layout (`dir=col`), and interactions (`@click`) are declared per element.  
+- **Zero CSS Files**: Eliminates external stylesheets, reducing context-switching for LLMs.  
+
+#### **4. Responsive by Default**  
+- **Breakpoints as First-Class Citizens**: Declare responsive rules inline (e.g., `@mobile maxw=600 { ... }`).  
+
+#### **5. Extensibility**  
+- **Component-Driven**: Predefine reusable templates (e.g., `@navbar`) for complex patterns.  
+- **State Management Ready**: Designed to later support dynamic data binding (e.g., `$userName`).  
+
+---
+
+### **Key Innovations vs. Traditional Frameworks**  
+
+| **Aspect**               | **Traditional Frameworks**          | **NeuroLens**                                  |  
+|--------------------------|--------------------------------------|-----------------------------------------------|  
+| **Syntax**               | Human-readable (HTML/JSX)           | Machine-optimized (1-3 char tokens)           |  
+| **Styling**              | External CSS/SASS                   | Inline atomic attributes (`s=24`, `tc=#333`)  |  
+| **Interactions**         | Event listeners in JavaScript       | Declarative inline directives (`@click=...`)  |  
+| **Responsive Design**    | Media queries in CSS                | Breakpoint blocks nested in DSL (`@mobile`)   |  
+| **Development Workflow** | Human writes code                   | Human describes intent → LLM generates DSL    |  
+
+---
+
+### **Target Use Cases**  
+1. **AI-Powered Prototyping**:  
+   Generate UIs from natural language prompts for rapid MVP testing.  
+2. **Low-Code/No-Code Tools**:  
+   Backend for visual editors that compile to NeuroLens DSL.  
+3. **Dynamic Applications**:  
+   Pair with LLM agents to create self-modifying UIs (e.g., dashboards that adapt to user behavior).  
+
+---
+
+### **Long-Term Vision**  
+NeuroLens aims to become the **standard interface for AI-generated UIs**, analogous to HTML for humans. By abstracting away syntactic complexity, it enables:  
+- **Democratized Development**: Non-developers create functional UIs through natural language.  
+- **AI Collaboration**: LLMs and humans iteratively refine interfaces in a shared language.  
+- **Scalable Automation**: Integration with DevOps pipelines for end-to-end AI-driven deployment.  
+
+--- 
+
+### **Why This Matters**  
+In the AI era, tools must evolve to match how machines—not just humans—think. NeuroLens reimagines UI development as a collaboration between human intent and machine execution, unlocking new possibilities for speed, accessibility, and creativity.
